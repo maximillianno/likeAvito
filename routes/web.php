@@ -14,7 +14,22 @@
 
 
 
-Auth::routes();
+//Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/cabinet', 'Cabinet\HomeController@index')->name('cabinet');
+
+Route::post('/register1', 'RegisterController@register');
+Route::get('/register1', 'RegisterController@showForm')->name('register');
+Route::get('/login1', 'Auth\LoginController@showLoginForm')->name('login');
+Route::get('/verify/{token}', 'RegisterController@verify')->name('register.verify');
+Route::POST('/logout', 'Auth\LoginController@logout')->name('logout');
+Route::group([
+    'prefix' => 'admin',
+    'as' => 'admin.',
+    'namespace' => 'Admin',
+    'middleware' => ['auth']
+    ], function () {
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::resource('users', 'UsersController');
+});

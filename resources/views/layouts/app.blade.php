@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Adverts</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -21,8 +21,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+    <header id="app">
+        <nav class="navbar navbar-expand-md navbar-dark">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -72,9 +72,23 @@
             </div>
         </nav>
 
-        <main class="py-4">
-            @yield('content')
+    </header>
+        <main class="app-content py-3">
+            <div class="container">
+                @yield('breadcrumbs')
+
+
+                @include('layouts.partials.flash')
+
+                @yield('content')
+            </div>
         </main>
-    </div>
+    <footer>
+        <div class="container">
+            <div class="border-top pt-3">
+                <p>{{ date('Y') }} - Adverts</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
