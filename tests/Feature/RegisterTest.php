@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use App\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RegisterTest extends TestCase
 {
+    use DatabaseTransactions;
     /**
      * A basic test example.
      *
@@ -31,11 +33,25 @@ class RegisterTest extends TestCase
 
         self::assertTrue($user->isWait());
         self::assertFalse($user->isActive());
+//        $user->delete();
     }
 
     public function testVerify(){
         $user = User::register('name', 'email', 'password');
+        $user->verify();
+
+        self::assertFalse($user->isWait());
+        self::assertTrue($user->isActive());
+//        $user->delete();
 
 
+    }
+
+    public  function testAlreadyVerified(){
+        $user = User::register('name', 'email', 'password');
+        $user->verify();
+        $this->expectExceptionMessage('User is already verified');
+        $user->verify();
+//        $user->delete();
     }
 }

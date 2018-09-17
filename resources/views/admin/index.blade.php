@@ -6,7 +6,8 @@
 
 @section('content')
     <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><a class="nav-link active" href="{{ route('admin.home') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('admin.home') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{{ route('admin.users.index') }}">Users</a></li>
     </ul>
 
     <p><a href="{{ route('admin.users.create') }}" class="btn btn-success">Add User</a></p>
@@ -87,14 +88,14 @@
                 <td><a href="{{ route('admin.users.show', $user) }}">{{ $user->name }}</a></td>
                 <td>{{ $user->email }}</td>
 
-                {{--<td>--}}
-                    {{--@if ($user->isWait())--}}
-                        {{--<span class="badge badge-secondary">Waiting</span>--}}
-                    {{--@endif--}}
-                    {{--@if ($user->isActive())--}}
-                        {{--<span class="badge badge-primary">Active</span>--}}
-                    {{--@endif--}}
-                {{--</td>--}}
+                <td>
+                    @if ($user->isWait())
+                        <span class="badge badge-secondary">Waiting</span>
+                    @endif
+                    @if ($user->isActive())
+                        <span class="badge badge-primary">Active</span>
+                    @endif
+                </td>
                 {{--<td>--}}
                     {{--@if ($user->isAdmin())--}}
                         {{--<span class="badge badge-danger">Admin</span>--}}

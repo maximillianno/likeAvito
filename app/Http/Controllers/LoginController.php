@@ -65,7 +65,7 @@ class LoginController extends Controller
 //                $this->sms->send($user->phone, 'Login code: ' . $token);
 //                return redirect()->route('login.phone');
 //            }
-            return redirect()->intended(route('cabinet.home'));
+            return redirect()->intended(route('cabinet'));
         }
 
         $this->incrementLoginAttempts($request);

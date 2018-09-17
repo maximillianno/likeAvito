@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
@@ -39,25 +42,30 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserCreateRequest $request)
     {
-        //
-        $data = $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users'
-        ]);
-        $data['status'] = User::STATUS_ACTIVE;
-        $user = User::create($data);
+        //Это перенесли в реквест
+//        $data = $this->validate($request, [
+//            'name' => 'required|string|max:255',
+//            'email' => 'required|string|email|max:255|unique:users'
+//        ]);
+//        $data['status'] = User::STATUS_ACTIVE;
+
+
+        $user = User::create($request->only(['name', 'email']) + [
+                'password' => bcrypt(Str::random()),
+                'status' => User::STATUS_ACTIVE,
+            ]);
         return redirect()->route('admin.users.show', ['id' => $user->id]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -70,7 +78,7 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -78,7 +86,7 @@ class UsersController extends Controller
         //
         $user = User::findOrFail($id);
         $statuses = [
-          User::STATUS_ACTIVE => 'Active',
+            User::STATUS_ACTIVE => 'Active',
             User::STATUS_WAIT => 'Waiting'
         ];
         return view('admin.edit', compact(['user', 'statuses']));
@@ -87,20 +95,22 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $id)
     {
         //
         $user = User::findOrFail($id);
-        $data = $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'status' => ['required', 'string', Rule::in([User::STATUS_WAIT, User::STATUS_ACTIVE])]
-        ]);
-        $user->update($data);
+
+//        $data = $this->validate($request, [
+//            'name' => 'required|string|max:255',
+//            'email' => 'required|string|email|max:255|unique:users,id,'.$user->id,
+//            'status' => ['required', 'string', Rule::in([User::STATUS_WAIT, User::STATUS_ACTIVE])]
+//        ]);
+
+        $user->update($request->only('name', 'email', 'status'));
 
         return redirect()->route('admin.users.show', ['id' => $user->id]);
     }
@@ -108,7 +118,7 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -116,6 +126,12 @@ class UsersController extends Controller
         //
         $user = User::findOrFail($id);
         $user->delete();
+    }
+
+    public function verify(User $user)
+    {
+        $user->verify();
+        return redirect()->route('admin.users.show', $user);
 
     }
 }

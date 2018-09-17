@@ -32,5 +32,6 @@ Route::group([
     'middleware' => ['auth']
     ], function () {
     Route::get('/', 'HomeController@index')->name('home');
+    Route::post('/users/verify/{user}', 'UsersController@verify')->name('users.verify');
     Route::resource('users', 'UsersController');
 });

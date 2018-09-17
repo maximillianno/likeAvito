@@ -14,13 +14,11 @@ class RegisterController extends Controller
 {
     //
     public function register(UserRequest $request){
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => bcrypt($request['password']),
-            'verify_code' => Str::random(),
-            'status' => User::STATUS_WAIT,
-            ]);
+        $user = User::register(
+            $request['name'],
+            $request['email'],
+            $request['password'
+        ]);
 
 //        \Mail::to($user->email)->send(new VerifyMail($user));
         \Mail::to(env('MAIL_BOX'))->send(new VerifyMail($user));
@@ -45,12 +43,20 @@ class RegisterController extends Controller
             return redirect()->route('login')
                 ->with('error', 'Sorry your link is bad');
         }
-        if ($user->status !== User::STATUS_WAIT){
-            return redirect()->route('login')->with('error', 'Your email already verified');
+
+        try {
+            $user->verify();
+        } catch (\DomainException $e) {
+            return redirect()->route('login')->with('error', $e->getMessage());
         }
-        $user->status = User::STATUS_ACTIVE;
-        $user->verify_code = null;
-        $user->save();
+
+
+        return redirect()->route('login')->with('status', 'Your email is verified. You can now login.');
+
+//        Перенесли в пользователя
+//        $user->status = User::STATUS_ACTIVE;
+//        $user->verify_code = null;
+//        $user->save();
 
         return redirect()->route('login')
             ->with('success', 'Your e-mail is verified. You can now login');
