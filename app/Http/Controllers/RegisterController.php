@@ -18,11 +18,12 @@ class RegisterController extends Controller
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => bcrypt($request['password']),
-            'verify_token' => Str::random(),
+            'verify_code' => Str::random(),
             'status' => User::STATUS_WAIT,
             ]);
 
-        \Mail::to($user->email)->send(new VerifyMail($user));
+//        \Mail::to($user->email)->send(new VerifyMail($user));
+        \Mail::to(env('MAIL_BOX'))->send(new VerifyMail($user));
         event(new Registered($user));
 //        Auth::login($user);
         return redirect()->route('home');
@@ -40,7 +41,7 @@ class RegisterController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function verify($token){
-        if (!$user = User::where('token', $token)->first()){
+        if (!$user = User::where('verify_code', $token)->first()){
             return redirect()->route('login')
                 ->with('error', 'Sorry your link is bad');
         }
@@ -48,7 +49,7 @@ class RegisterController extends Controller
             return redirect()->route('login')->with('error', 'Your email already verified');
         }
         $user->status = User::STATUS_ACTIVE;
-        $user->verify_token = null;
+        $user->verify_code = null;
         $user->save();
 
         return redirect()->route('login')

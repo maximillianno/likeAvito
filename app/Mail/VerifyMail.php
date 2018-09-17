@@ -33,7 +33,7 @@ class VerifyMail extends Mailable
     {
 //        return $this->view('view.name');
         return $this->subject('Verify email')
-            ->markdown('verify_auth');
+            ->markdown('vendor.mail.verify_auth');
 
     }
 }

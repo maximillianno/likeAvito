@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
@@ -15,6 +17,12 @@ class UsersController extends Controller
     public function index()
     {
         //
+        $statuses = [
+            User::STATUS_ACTIVE => 'Active',
+            User::STATUS_WAIT => 'Waiting'
+        ];
+        $users = User::orderBy('id', 'desc')->paginate();
+        return view('admin.index', compact(['users', 'statuses']));
     }
 
     /**
@@ -25,6 +33,7 @@ class UsersController extends Controller
     public function create()
     {
         //
+        return view('admin.create');
     }
 
     /**
@@ -36,6 +45,13 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         //
+        $data = $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users'
+        ]);
+        $data['status'] = User::STATUS_ACTIVE;
+        $user = User::create($data);
+        return redirect()->route('admin.users.show', ['id' => $user->id]);
     }
 
     /**
@@ -47,6 +63,8 @@ class UsersController extends Controller
     public function show($id)
     {
         //
+        $user = User::findOrFail($id);
+        return view('admin.show', compact('user'));
     }
 
     /**
@@ -58,6 +76,12 @@ class UsersController extends Controller
     public function edit($id)
     {
         //
+        $user = User::findOrFail($id);
+        $statuses = [
+          User::STATUS_ACTIVE => 'Active',
+            User::STATUS_WAIT => 'Waiting'
+        ];
+        return view('admin.edit', compact(['user', 'statuses']));
     }
 
     /**
@@ -70,6 +94,15 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $user = User::findOrFail($id);
+        $data = $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'status' => ['required', 'string', Rule::in([User::STATUS_WAIT, User::STATUS_ACTIVE])]
+        ]);
+        $user->update($data);
+
+        return redirect()->route('admin.users.show', ['id' => $user->id]);
     }
 
     /**
@@ -81,5 +114,8 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
+        $user = User::findOrFail($id);
+        $user->delete();
+
     }
 }

@@ -10,6 +10,42 @@ Breadcrumbs::for('cabinet', function ($trail) {
 });
 
 
+Breadcrumbs::for('admin.home', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Admin', route('admin.home'));
+});
+
+
+Breadcrumbs::for('admin.users.index', function ($trail) {
+    $trail->parent('admin.home');
+    $trail->push('Users', route('admin.users.index'));
+});
+Breadcrumbs::for('admin.users.create', function ($trail) {
+    $trail->parent('admin.users.index');
+    $trail->push('Create', route('admin.users.create'));
+});
+//Breadcrumbs::for('admin.users.show', function ($trail, \App\User $user) {
+Breadcrumbs::for('admin.users.show', function ($trail, $id) {
+    $user = \App\User::findOrFail($id);
+    $trail->parent('admin.users.index');
+    $trail->push($user->name, route('admin.users.show', $user));
+});
+Breadcrumbs::for('admin.users.edit', function ($trail, $id) {
+    $user = \App\User::findOrFail($id);
+    $trail->parent('admin.users.show', $id);
+    $trail->push('Edit', route('admin.users.edit', $user));
+});
+
+
+// Home > Login
+Breadcrumbs::for('login', function ($trail) {
+    $trail->parent('home');
+    $trail->push('About', route('login'));
+});
+
+
+
+
 // Home > About
 Breadcrumbs::for('about', function ($trail) {
     $trail->parent('home');

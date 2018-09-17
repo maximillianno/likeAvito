@@ -1,4 +1,8 @@
-@extends('layouts.app)
+@extends('layouts.app')
+
+@section('breadcrumbs')
+    {!! Breadcrumbs::render() !!}
+@endsection
 
 @section('content')
     <ul class="nav nav-tabs mb-3">
