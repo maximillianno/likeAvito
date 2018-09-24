@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label for="id" class="col-form-label">ID</label>
 
-                            {{--<input id="id" class="form-control" name="id" value="{{ request('id') }}">--}}
+                            <input id="id" class="form-control" name="id" value="{{ request('id') }}">
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -51,12 +51,12 @@
                         <div class="form-group">
                             <label for="role" class="col-form-label">Role</label>
 
-                            {{--<select id="role" class="form-control" name="role">--}}
-                                {{--<option value=""></option>--}}
-                                {{--@foreach ($roles as $value => $label)--}}
-                                    {{--<option value="{{ $value }}"{{ $value === request('role') ? ' selected' : '' }}>{{ $label }}</option>--}}
-                                {{--@endforeach;--}}
-                            {{--</select>--}}
+                            <select id="role" class="form-control" name="role">
+                                <option value=""></option>
+                                @foreach ($roles as $value => $label)
+                                    <option value="{{ $value }}"{{ $value === request('role') ? ' selected' : '' }}>{{ $label }}</option>
+                                @endforeach;
+                            </select>
                         </div>
                     </div>
                     <div class="col-sm-2">

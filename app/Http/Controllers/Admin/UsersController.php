@@ -12,20 +12,48 @@ use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        //Перенесли в маршруты
+//        $this->middleware('can:admin-panel');
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        $query = User::orderByDesc('id');
+        if (!empty($value = $request['id'])){
+            $query->where('id', $value);
+        }
+        if (!empty($value = $request->get('name'))){
+            $query->where('name', 'like', '%'.$value.'%');
+        }
+        if (!empty($value = $request->get('email'))){
+            $query->where('email', 'like', '%'.$value.'%');
+        }
+        if (!empty($value = $request->get('status'))){
+            $query->where('status', $value);
+        }
+        if (!empty($value = $request->get('role'))){
+            $query->where('role', $value);
+        }
+        $users = $query->paginate();
+
+        $roles = [
+            User::ROLE_ADMIN => 'Admin',
+            User::ROLE_USER => 'User'
+        ];
         $statuses = [
             User::STATUS_ACTIVE => 'Active',
             User::STATUS_WAIT => 'Waiting'
         ];
-        $users = User::orderBy('id', 'desc')->paginate();
-        return view('admin.index', compact(['users', 'statuses']));
+//        $users = User::orderBy('id', 'desc')->paginate();
+        return view('admin.index', compact(['users', 'statuses', 'roles']));
     }
 
     /**
