@@ -85,11 +85,15 @@ class UsersController extends Controller
     {
         //
         $user = User::findOrFail($id);
+        $roles = [
+            User::ROLE_ADMIN => 'Admin',
+            User::ROLE_USER => 'User'
+        ];
         $statuses = [
             User::STATUS_ACTIVE => 'Active',
             User::STATUS_WAIT => 'Waiting'
         ];
-        return view('admin.edit', compact(['user', 'statuses']));
+        return view('admin.edit', compact(['user', 'statuses', 'roles']));
     }
 
     /**

@@ -36,6 +36,8 @@ class User extends Authenticatable
 
     public const STATUS_WAIT = 'wait';
     public const STATUS_ACTIVE = 'active';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
 
 
     /**
@@ -44,8 +46,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'status', 'verify_code'
+        'name', 'email', 'password', 'status', 'verify_code', 'role'
     ];
+
 
     /**
      * The attributes that should be hidden for arrays.
@@ -66,6 +69,7 @@ class User extends Authenticatable
             'verify_code' => Str::uuid()
         ]);
     }
+
     //Создание пользователя из админки
     public static function newUser(string $name, string $email): self
     {
@@ -92,13 +96,31 @@ class User extends Authenticatable
      */
     public function verify(): void
     {
-        if (!$this->isWait()){
+        if (!$this->isWait()) {
             throw new \DomainException('User is already verified.');
         }
         $this->update([
-           'status' => self::STATUS_ACTIVE,
-           'verify_code' => null,
+            'status' => self::STATUS_ACTIVE,
+            'verify_code' => null,
         ]);
+
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+
+    }
+
+    public function changeRole(string $role)
+    {
+        if (!in_array($role, [self::ROLE_ADMIN, self::ROLE_USER], true)) {
+            throw new \InvalidArgumentException('Undefined role "' . $role . '"');
+        }
+        if ($this->role === $role) {
+            throw new \DomainException('Role is already assigned.');
+        }
+        $this->update(['role' => $role]);
 
     }
 }

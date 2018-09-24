@@ -43,23 +43,23 @@
             <th>Status</th>
             <td>
 
-                {{--@if ($user->isWait())--}}
-                    {{--<span class="badge badge-secondary">Waiting</span>--}}
-                {{--@endif--}}
-                {{--@if ($user->isActive())--}}
-                    {{--<span class="badge badge-primary">Active</span>--}}
-                {{--@endif--}}
+                @if ($user->isWait())
+                    <span class="badge badge-secondary">Waiting</span>
+                @endif
+                @if ($user->isActive())
+                    <span class="badge badge-primary">Active</span>
+                @endif
             </td>
         </tr>
         <tr>
             <th>Role</th>
             <td>
 
-                {{--@if ($user->isAdmin())--}}
-                    {{--<span class="badge badge-danger">Admin</span>--}}
-                {{--@else--}}
-                    {{--<span class="badge badge-secondary">User</span>--}}
-                {{--@endif--}}
+                @if ($user->isAdmin())
+                    <span class="badge badge-danger">Admin</span>
+                @else
+                    <span class="badge badge-secondary">User</span>
+                @endif
             </td>
         </tr>
         <tbody>
