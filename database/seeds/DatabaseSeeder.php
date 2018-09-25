@@ -12,5 +12,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
+         $this->call(RegionsTableSeeder::class);
+
+//        factory(\App\Region::class, 10)->create()->each(function(\App\Region $region){
+//            $region->children()->saveMany(factory(\App\Region::class, random_int(3,10))->create()->each(function(\App\Region $region){
+//                $region->children()->saveMany(factory(\App\Region::class, random_int(3, 10))->make());
+//            }));
+//
+//        });
     }
 }

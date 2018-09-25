@@ -29,6 +29,27 @@ class AuthServiceProvider extends ServiceProvider
         \Gate::define('admin-panel', function (User $user) {
            return $user->isAdmin();
         });
+        \Gate::define('manage-adverts', function (User $user) {
+           return $user->isAdmin();
+        });
+        \Gate::define('manage-banners', function (User $user) {
+           return $user->isAdmin();
+        });
+        \Gate::define('manage-regions', function (User $user) {
+           return $user->isAdmin();
+        });
+        \Gate::define('manage-adverts-categories', function (User $user) {
+           return $user->isAdmin();
+        });
+        \Gate::define('manage-pages', function (User $user) {
+           return $user->isAdmin();
+        });
+        \Gate::define('manage-users', function (User $user) {
+           return $user->isAdmin();
+        });
+        \Gate::define('manage-tickets', function (User $user) {
+           return $user->isAdmin();
+        });
 
         //
     }

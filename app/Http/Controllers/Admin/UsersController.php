@@ -53,7 +53,7 @@ class UsersController extends Controller
             User::STATUS_WAIT => 'Waiting'
         ];
 //        $users = User::orderBy('id', 'desc')->paginate();
-        return view('admin.index', compact(['users', 'statuses', 'roles']));
+        return view('admin.users.index', compact(['users', 'statuses', 'roles']));
     }
 
     /**
@@ -64,7 +64,7 @@ class UsersController extends Controller
     public function create()
     {
         //
-        return view('admin.create');
+        return view('admin.users.create');
     }
 
     /**
@@ -100,7 +100,7 @@ class UsersController extends Controller
     {
         //
         $user = User::findOrFail($id);
-        return view('admin.show', compact('user'));
+        return view('admin.users.show', compact('user'));
     }
 
     /**
@@ -121,7 +121,7 @@ class UsersController extends Controller
             User::STATUS_ACTIVE => 'Active',
             User::STATUS_WAIT => 'Waiting'
         ];
-        return view('admin.edit', compact(['user', 'statuses', 'roles']));
+        return view('admin.users.edit', compact(['user', 'statuses', 'roles']));
     }
 
     /**

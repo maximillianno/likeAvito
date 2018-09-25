@@ -5,9 +5,7 @@
 @endsection
 
 @section('content')
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><a class="nav-link active" href="{{ route('admin.home') }}">Dashboard</a></li>
-    </ul>
+    @include('admin.users._nav')
 
     <form method="POST" action="{{ route('admin.users.update', $user) }}">
         @csrf

@@ -5,9 +5,7 @@
 @endsection
 
 @section('content')
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item"><a class="nav-link active" href="{{ route('admin.home') }}">Dashboard</a></li>
-    </ul>
+    @include('admin.users._nav')
 
     <div class="d-flex flex-row mb-3">
         <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary mr-1">Edit</a>
