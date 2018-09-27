@@ -16,9 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $categories = Category::defaultOrder();
-        dd($categories);
-//        $categories = Category::defaultOrder()->withDepth()->get();
+        $categories = Category::defaultOrder()->withDepth()->get();
         return view('admin.adverts.categories.index', compact('categories'));
 
     }
@@ -31,6 +29,9 @@ class CategoryController extends Controller
     public function create()
     {
         //
+        $parents = Category::defaultOrder()->withDepth()->get();
+        return view('admin.adverts.categories.create', compact('parents'));
+
     }
 
     /**
@@ -42,6 +43,17 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+           'name' => 'required|string|max:255',
+           'slug' => 'required|string|max:255',
+           'parent' => 'nullable|integer|exists:advert_categories,id'
+        ]);
+        $category = Category::create([
+            'name' => $request['name'],
+            'slug' => $request['slug'],
+            'parent_id' => $request['parent'],
+        ]);
+        return redirect()->route('admin.adverts.categories.show', $category);
     }
 
     /**
@@ -53,6 +65,8 @@ class CategoryController extends Controller
     public function show($id)
     {
         //
+        $category = Category::findOrFail($id);
+        return view('admin.adverts.categories.show', compact('category'));
     }
 
     /**
