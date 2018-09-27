@@ -11,7 +11,7 @@
         <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary mr-1">Edit</a>
 
         @if ($user->isWait())
-        {{--TODO сделать user.verify--}}
+
             <form method="POST" action="{{ route('admin.users.verify', $user) }}" class="mr-1">
             {{--<form method="POST" action="{{ route('register.verify', $user) }}" class="mr-1">--}}
                 @csrf

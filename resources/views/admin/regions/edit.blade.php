@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('breadcrumbs')
+    {!! Breadcrumbs::render() !!}
+@endsection
+
 @section('content')
     @include('admin.regions._nav')
 

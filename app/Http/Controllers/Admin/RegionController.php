@@ -16,7 +16,8 @@ class RegionController extends Controller
     public function index()
     {
         //
-        $regions = Region::paginate();
+//        $regions = Region::orderBy('name')->paginate();
+        $regions = Region::where('parent_id', null)->orderBy('name')->paginate();
         return view('admin.regions.index', compact('regions'));
     }
 
@@ -25,10 +26,14 @@ class RegionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
-        return view('admin.regions.create');
+        $parent = null;
+        if ($request->get('parent')) {
+            $parent = Region::findOrFail($request->get('parent'));
+        }
+        return view('admin.regions.create', compact('parent'));
     }
 
     /**
@@ -40,15 +45,18 @@ class RegionController extends Controller
     public function store(Request $request)
     {
         //
+
         $this->validate($request, [
-            'name' => 'required|string|max:255|unique:regions,name,NULL,id,parent_id'.$request['parent']?:null,
+            'name' => 'required|string|max:255|unique:regions,name,NULL,id,parent_id,'.$request['parent']?:null,
+            'slug' => 'required|string|max:255|unique:regions,slug,NULL,id,parent_id,'.$request['parent']?:null,
+            'parent' => 'nullable|exists:regions,id'
         ]);
         $region = Region::create([
            'name' => $request['name'],
            'slug' => $request['slug'],
            'parent_id' => $request['parent'],
         ]);
-        return redirect()->route('admin.users.show', $region);
+        return redirect()->route('admin.regions.show', $region);
     }
 
     /**
@@ -60,6 +68,7 @@ class RegionController extends Controller
     public function show($id)
     {
         //
+
         $region = Region::findOrFail($id);
         $regions = $region->children;
         return view('admin.regions.show', compact(['region', 'regions']));
@@ -74,6 +83,7 @@ class RegionController extends Controller
     public function edit($id)
     {
         //
+
         $region = Region::findOrFail($id);
         return view('admin.regions.edit', compact('region'));
     }
@@ -88,6 +98,18 @@ class RegionController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $region = Region::findOrFail($id);
+        $this->validate($request, [
+            'name' => 'required|string|max:255|unique:regions,name,'.$region->id.',id,parent_id,'.$region->parent_id,
+            'slug' => 'required|string|max:255|unique:regions,slug,'.$region->id.',id,parent_id,'.$region->parent_id,
+            'parent' => 'nullable|exists:regions,id'
+        ]);
+        $region = Region::update([
+            'name' => $request['name'],
+            'slug' => $request['slug'],
+            'parent_id' => $request['parent'],
+        ]);
+        return redirect()->route('admin.regions.show', $region);
     }
 
     /**
@@ -99,5 +121,8 @@ class RegionController extends Controller
     public function destroy($id)
     {
         //
+        $region = Region::findOrFail($id);
+        $region->delete();
+        return redirect()->route('admin.regions.index');
     }
 }
